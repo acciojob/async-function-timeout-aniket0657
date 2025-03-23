@@ -1,31 +1,38 @@
-//your JS code here. If required.
-// Function that returns a promise that resolves after a given delay
-function delayMessage(delay) {
-    return new Promise(resolve => setTimeout(resolve, delay));
-}
+describe("example to-do app", () => {
+    beforeEach(() => {
+        cy.visit(baseUrl + "/main.html"); // Ensure the correct URL
+    });
 
-// Async function to handle the delay and display message
-async function displayMessage() {
-    // Get user input values
-    const textInput = document.getElementById("text").value;
-    const delayInput = document.getElementById("delay").value;
-    const outputDiv = document.getElementById("output");
+    it("Checking empty form", () => {
+        cy.get("input#text").should("be.empty");
+        cy.get("input#delay").should("be.empty");
+        cy.get("button#btn").should("exist");
+        cy.get("div#output").should("be.empty");
+    });
 
-    // Convert delay to a number (milliseconds)
-    const delay = parseInt(delayInput, 10);
+    it("Checking values - 1", () => {
+        const text = "Test - 1";
+        const delay = 1000;
 
-    // Validate input to ensure a valid number is entered
-    if (isNaN(delay) || delay < 0) {
-        outputDiv.innerText = "Please enter a valid delay time (positive number).";
-        return;
-    }
+        cy.get("input#text").type(text);
+        cy.get("input#delay").type(delay);
+        cy.get("button#btn").click();
 
-    // Wait for the specified delay
-    await delayMessage(delay);
+        // Wait for the delay and check the output
+        cy.wait(delay + 500); // Give some buffer time
+        cy.get("div#output").should("have.text", text);
+    });
 
-    // Display the message in the output div
-    outputDiv.innerText = textInput;
-}
+    it("Checking values - 2", () => {
+        const text = "Test - 2";
+        const delay = 2000;
 
-// Attach event listener to button
-document.getElementById("btn").addEventListener("click", displayMessage);
+        cy.get("input#text").type(text);
+        cy.get("input#delay").type(delay);
+        cy.get("button#btn").click();
+
+        // Wait for the delay and check the output
+        cy.wait(delay + 500); // Give some buffer time
+        cy.get("div#output").should("have.text", text);
+    });
+});
